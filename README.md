@@ -1,2 +1,2 @@
 # d-dec
-Distributed failure detection system
+multi-server failure detection and recovery system
