@@ -61,16 +61,16 @@ app.get("/alive", (req, res) => {
 });
 
 app.post("/heartbeat", (req, res) => {
-    const { ID: reqID, PORT: reqPORT } = req.body;
+    const { ID: senderId, PORT: senderPort } = req.body;
 
-    if (!lastSeen.has(reqID)) {
-        req.status(401).json({ message: "Unknown peer" });
+    if (!lastSeen.has(senderId)) {
+        return res.status(400).json({ message: "Unknown peer" });
     }
 
-    lastSeen.set(reqID, Date.now());
+    lastSeen.set(senderId, Date.now());
 
-    console.log(`Heartbeat request received from Server ${reqID} on Port ${reqPORT}`);
-    res.status(200).json({ message: `Heartbeat request successfully received by Server ${ID} on Port ${PORT}` })
+    console.log(`Heartbeat request received from Server ${senderId} on Port ${senderPort}`);
+    return res.status(200).json({ message: `Heartbeat request successfully received by Server ${ID} on Port ${PORT}` })
 
 });
 
@@ -193,11 +193,11 @@ setInterval(() => {
 setInterval(() => {
     for (const [peerID, time] of lastSeen) {
         if (time === null) {
-            console.log(`Server on port ${peerID} has a status of UNKNOWN`)
+            console.log(`Server ${peerID} has a status of UNKNOWN`)
         } else if (Date.now() - time > TIMEOUT) {
-            console.log(`Server on port ${peerID} has FAILED`)
+            console.log(`Server ${peerID} has FAILED`)
         } else {
-            console.log(`Server on port ${peerID} is HEALTHY`)
+            console.log(`Server ${peerID} is HEALTHY`)
         }
     }
 }, 3000)
